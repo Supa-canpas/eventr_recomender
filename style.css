@@ -1,0 +1,10 @@
+.jujutsu {
+    padding: 0.5em 1em;
+    margin: 2em 0;
+    border: solid 3px #000000;
+}
+
+.title_jujutsu {
+    font-size: 160%;
+    font-weight: bold;
+}
