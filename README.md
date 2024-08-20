@@ -1,3 +1,3 @@
 # eventr_recomender
 現在近くで行われているイベントを教えてくれるアプリです。
-kkkkkkkkkkkkkkkkkkkkk
+githubの扱いに慣れることを目的としています。
