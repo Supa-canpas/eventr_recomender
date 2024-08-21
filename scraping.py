@@ -1,6 +1,19 @@
 import requests
 from bs4 import BeautifulSoup
 
+def getUrl():
+    url = 'https://collabo-cafe.com/'
+    res = requests.get(url)
+    soup = BeautifulSoup(res.text, 'html.parser')
+    allUrldiv = soup.find('div','widget__post__list')
+    allUrla = allUrldiv.find_all('a')
+    infoUrl =[]
+    for i in allUrla:
+        buf = i["href"]
+        infoUrl.append(buf)
+    print(infoUrl)
+
+
 def getInfo(url):
     # url = 'https://collabo-cafe.com/events/collabo/shingeki-gigo-cafe-ikebukuro2024/'
     res = requests.get(url)
@@ -20,6 +33,7 @@ def getInfo(url):
     return info
 
 if __name__ == '__main__':
-    url = "https://collabo-cafe.com/events/collabo/korirakkuma-20th-anniversary-pop-up-store-nagoya-2024/"
-    info = getInfo(url)
-    print(info)
+    # url = "https://collabo-cafe.com/events/collabo/shingeki-gigo-cafe-ikebukuro2024/"
+    # info = getInfo(url)
+    # print(info)
+    getUrl()
