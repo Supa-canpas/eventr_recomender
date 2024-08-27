@@ -43,11 +43,11 @@
         $command="python scraping.py";
         exec($command, $output);
 
-        $title;
-        $officialsite;
-        $place;
-        $date;
-        $access;
+        $title = "";
+        $officialsite = "";
+        $place = "";
+        $date = "";
+        $access = "";
 
         $i=0;
 
@@ -55,9 +55,17 @@
             $info = iconv("Shift-JIS", "UTF-8", $_info);
             if ($info == "separate_site") {
                 // echo "<hr>";
+                database_process($title,$officialsite,$place,$date,$access);
+                $i=0;
+                $title = "";
+                $officialsite = "";
+                $place = "";
+                $date = "";
+                $access = "";
             } 
             else if ($info == "separate_table") {
                 // echo "<br>";
+                $i++;
             }
             else if ($info === "コラボカフェ" or $info === "ポップアップストア" or $info === "原画展・展示会") {
                 // echo "<h1>";
@@ -68,30 +76,11 @@
             else {
                 // echo $info;
 
-                if($i==0)
-                {
-                    $title=$info;
-                    $i++;
-                }
-                else if($i==1){
-                    $officialsite=$info;
-                    $i++;
-                }
-                else if($i==2){
-                    $place=$info;
-                    $i++;
-                }
-                else if($i==3){
-                    $date=$info;
-                    $i++;
-                }
-                else if($i==4)
-                {
-                    $access=$info;
-                    $i++;
-                    database_process($title,$officialsite,$place,$date,$access);
-                    $i=0;
-                }
+                if($i==0) $title.=$info;
+                else if($i==1) $officialsite.=$info;
+                else if($i==2) $place.=$info;
+                else if($i==3) $date.=$info;
+                else if($i==4) $access.=$info;
             }
         }
 
