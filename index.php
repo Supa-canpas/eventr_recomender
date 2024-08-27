@@ -8,17 +8,20 @@
 
         function database_process($_title,$_officialsite,$_place,$_date,$_access)
         {
+                $user='root';
+                $pass='root';
             try {
-                $db = new PDO('mysql:host=localhost;dbname=eventdatabase', 'root', 'root');
                 
-                $title='a';
-                $officialsite='b';
-                $place='c';
-                $date='d';
-                $access='e';
+                $db = new PDO('mysql:host=localhost;dbname=eventdatabase', $user, $pass);
+                
+                $title=$_title;
+                $officialsite=$_officialsite;
+                $place=$_place;
+                $date=$_date;
+                $access=$_access;
     
                 // SQLクエリ作成
-                $stmt = $db->prepare("INSERT INTO table VALUES(?, ?, ?, ?, ?);");
+                $stmt = $db->prepare("INSERT INTO event_info VALUES(?, ?, ?, ?, ?);");
 
                 $stmt->bindParam(1, $title,PDO::PARAM_STR);                
                 $stmt->bindParam(2, $officialsite,PDO::PARAM_STR);
@@ -26,11 +29,8 @@
                 $stmt->bindParam(4, $date, PDO::PARAM_STR);
                 $stmt->bindParam(5, $access, PDO::PARAM_STR);
         
-                echo '!!!!';
-                echo $title.'<br>',$officialsite.'<br>',$place.'<br>',$date.'<br>',$access.'<br>';
                 // クエリ実行
                 $res = $stmt->execute();
-                echo '????';
         
                 // 切断
                 $db = null;
