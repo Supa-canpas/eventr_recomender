@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html>
-<head>]
+<head>
     <title>イベントを君におすすめするWebサイト</title>
     <meta charset="UTF-8">
     <link rel="stylesheet" href="style.css">
