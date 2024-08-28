@@ -4,7 +4,7 @@
     <title>イベントを君におすすめするWebサイト</title>
     <meta charset="UTF-8">
     <link rel="stylesheet" href="style.css">
-    <script>
+    <!-- <script>
     function test() {
         navigator.geolocation.getCurrentPosition(test2);
     }
@@ -24,18 +24,18 @@
 
         alert(geo_text);
     }
-    </script>
+    </script> -->
 </head>
 <body>
     <button onclick="test()">test</button>
-    <!-- <?php
+    <?php
         require_once("save_data.php");
         $save_event_info = new SaveEventInfo();
         $save_event_info->exec_scraping_py();
         $save_event_info->delete_database();
         $save_event_info->save();
         $save_event_info->disconnect();
-    ?> -->
+    ?>
 
     <?php
         try {

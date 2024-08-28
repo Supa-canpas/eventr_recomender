@@ -2,6 +2,18 @@ import requests
 from bs4 import BeautifulSoup
 import time
 
+def encode_to_shijt_jis(string):
+    string = string.replace(u"\uff3c","~")
+    # string = string.replace(u"\uff5e",u"\u301c")
+    # string = string.replace(u"\u2225",u"\u2016")
+    # string = string.replace(u"\uff0d",u"\u2212")
+    # string = string.replace(u"\uffe0",u"\u00a2")
+    # string = string.replace(u"\uffe1",u"\u00a3")
+    # string = string.replace(u"\uffe2",u"\u00ac")
+    string = string.replace(u"\u200b", "")
+
+    return string
+
 class EventInfo:
     # self.infoUrlCafe
     # self.infoUrlPopUp
@@ -57,6 +69,7 @@ class EventInfo:
         for event_url in infoUrl:  
             self.getEventInfo(event_url)
             for info in self.event_details:
+                info = encode_to_shijt_jis(info)
                 print(info)
                 print("separate_table")
             print("separate_site")
