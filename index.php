@@ -4,37 +4,16 @@
     <title>イベントを君におすすめするWebサイト</title>
     <meta charset="UTF-8">
     <link rel="stylesheet" href="style.css">
-    <!-- <script>
-    function test() {
-        navigator.geolocation.getCurrentPosition(test2);
-    }
-
-    function test2(position) {
-        var geo_text = "緯度:" + position.coords.latitude + "\n";
-        geo_text += "経度:" + position.coords.longitude + "\n";
-        geo_text += "高度:" + position.coords.altitude + "\n";
-        geo_text += "位置精度:" + position.coords.accuracy + "\n";
-        geo_text += "高度精度:" + position.coords.altitudeAccuracy  + "\n";
-        geo_text += "移動方向:" + position.coords.heading + "\n";
-        geo_text += "速度:" + position.coords.speed + "\n";
-
-        var date = new Date(position.timestamp);
-
-        geo_text += "取得時刻:" + date.toLocaleString() + "\n";
-
-        alert(geo_text);
-    }
-    </script> -->
+    
 </head>
 <body>
-    <button onclick="test()">test</button>
     <?php
-        require_once("save_data.php");
-        $save_event_info = new SaveEventInfo();
-        $save_event_info->exec_scraping_py();
-        $save_event_info->delete_database();
-        $save_event_info->save();
-        $save_event_info->disconnect();
+        // require_once("save_data.php");
+        // $save_event_info = new SaveEventInfo();
+        // $save_event_info->exec_scraping_py();
+        // $save_event_info->delete_database();
+        // $save_event_info->save();
+        // $save_event_info->disconnect();
     ?>
 
     <?php
@@ -65,5 +44,68 @@
             echo 'データベース接続失敗';
         }
     ?>
+
+    <p id="latitude"></p>
+    <p id="altitude"></p>
+    <script>
+        class UserPostion {
+            latitude;
+            altitude;
+
+            get_latitude_altitude(position) {
+                // UserPostion.latitude = position.coords.latitude;  // 緯度
+                // UserPostion.altitude = position.coords.longitude; // 経度
+                let div_latitude = document.getElementById("latitude");
+                let div_altitude = document.getElementById("altitude");
+
+                div_latitude.innerHTML = position.coords.latitude;  // 緯度
+                div_altitude.innerHTML = position.coords.longitude; // 経度
+            }
+
+            get_postion() {
+                navigator.geolocation.getCurrentPosition(this.get_latitude_altitude);
+
+                let div_latitude = document.getElementById("latitude");
+                let div_altitude = document.getElementById("altitude");
+
+                // this.latitude = div_latitude.innerHTML;  // 緯度
+                // this.altitude = div_altitude.innerHTML; // 経度
+                console.log(div_latitude.innerHTML);
+            }
+        }
+        
+        let user_postion = new UserPostion();
+        user_postion.get_postion();
+
+        let latitude;
+        let altitude
+
+        setTimeout(() => {
+            let div_latitude = document.getElementById("latitude");
+            let div_altitude = document.getElementById("altitude");
+
+            // this.latitude = div_latitude.innerHTML;  // 緯度
+            // this.altitude = div_altitude.innerHTML; // 経度
+            console.log(div_latitude.innerHTML);
+            console.log(div_altitude.innerHTML);
+
+            latitude = div_latitude.innerHTML;
+            altitude = div_altitude.innerHTML;
+
+            // console.log(user_postion.latitude, user_postion.altitude)
+        }, 1000);
+
+        
+        
+    </script>
+
+    <script type="text/javascript" charset="utf-8" src="https://map.yahooapis.jp/js/V1/jsapi?appid=dj00aiZpPTdueDAyc3RReGRMTSZzPWNvbnN1bWVyc2VjcmV0Jng9MDc">
+        // console.log(latitude, altitude)
+        let ymap = new Y.Map("map");
+        setTimeout(() => {
+            ymap.drawMap(new Y.LatLng(latitude, altitude), 17, Y.LayerSetId.NORMAL);
+        }, 1000)
+    </script>
+
 </body>
 </html>	
