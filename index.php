@@ -4,7 +4,12 @@
     <title>イベントを君におすすめするWebサイト</title>
     <meta charset="UTF-8">
     <link rel="stylesheet" href="style.css">
-    
+    <script src="http://maps.google.com/maps/api/js?key=AIzaSyD2SLN_jrwM5MCqTLAIcJcLkuORj5dLiPw&language=ja"></script>
+    <style>
+        html { height: 100% }
+        body { height: 100% }
+        #map { height: 100%; width: 100%}
+    </style>
 </head>
 <body>
     <?php
@@ -48,7 +53,7 @@
     <p id="latitude"></p>
     <p id="altitude"></p>
     <script>
-        class UserPostion {
+        class MyMap {
             latitude;
             altitude;
             cnt_process_using_latitude_longitude;
@@ -64,14 +69,14 @@
                 document.getElementById("altitude").innerHTML = position.coords.longitude; // 経度
             }
 
-            get_postion() {
+            get_postion_and_exec_map_process() {
                 let timeout = 1000;
 
                 navigator.geolocation.getCurrentPosition(this.get_latitude_altitude, function(e){console.log(e.message);}, {"enableHighAccuracy": true, "timeout": timeout, "maximumAge": 1000});
                 setTimeout(()=>{
                     this.latitude = document.getElementById("latitude").innerHTML;
                     this.altitude = document.getElementById("altitude").innerHTML;
-                    if (this.latitude == "" && this.altitude == "") this.get_postion();
+                    if (this.latitude == "" && this.altitude == "") this.get_postion_and_exec_map_process();
                     this.process_using_latitude_longitude();
                 }, timeout);
             }
@@ -83,22 +88,26 @@
                 this.cnt_process_using_latitude_longitude = 1;
             }
         }
-        
-        let user_postion = new UserPostion();
-        
-        let consolelog = () => {
-            console.log(user_postion.latitude, user_postion.altitude);
-        }
-        user_postion.func_process_using_latitude_longitude = consolelog;
-
-        user_postion.get_postion();
     </script>
 
-    <!-- <script type="text/javascript" charset="utf-8" src="https://map.yahooapis.jp/js/V1/jsapi?appid=dj00aiZpPTdueDAyc3RReGRMTSZzPWNvbnN1bWVyc2VjcmV0Jng9MDc">
-        // console.log(latitude, altitude)
-        let ymap = new Y.Map("map");
-        ymap.drawMap(new Y.LatLng(user_postion.latitude, user_postion.altitude), 17, Y.LayerSetId.NORMAL);
-    </script> -->
+    <div id="map"></div>
 
+    <script>
+        let my_map = new MyMap();
+
+        const draw_map = () => {
+            var MyLatLng = new google.maps.LatLng(my_map.latitude, my_map.altitude);
+            var Options = {
+            zoom: 15,      //地図の縮尺値
+            center: MyLatLng,    //地図の中心座標
+            mapTypeId: 'roadmap'   //地図の種類
+            };
+            var map = new google.maps.Map(document.getElementById('map'), Options);
+        }
+
+        my_map.func_process_using_latitude_longitude = draw_map;
+
+        my_map.get_postion_and_exec_map_process();
+    </script>
 </body>
 </html>	
