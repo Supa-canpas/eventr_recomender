@@ -51,61 +51,54 @@
         class UserPostion {
             latitude;
             altitude;
+            cnt_process_using_latitude_longitude;
+            func_process_using_latitude_longitude;
+
+            constructor() {
+                this.cnt_process_using_latitude_longitude = 0;
+                this.func_process_using_latitude_longitude = () => {};
+            }
 
             get_latitude_altitude(position) {
-                // UserPostion.latitude = position.coords.latitude;  // 緯度
-                // UserPostion.altitude = position.coords.longitude; // 経度
-                let div_latitude = document.getElementById("latitude");
-                let div_altitude = document.getElementById("altitude");
-
-                div_latitude.innerHTML = position.coords.latitude;  // 緯度
-                div_altitude.innerHTML = position.coords.longitude; // 経度
+                document.getElementById("latitude").innerHTML = position.coords.latitude;  // 緯度
+                document.getElementById("altitude").innerHTML = position.coords.longitude; // 経度
             }
 
             get_postion() {
-                navigator.geolocation.getCurrentPosition(this.get_latitude_altitude);
+                let timeout = 1000;
 
-                let div_latitude = document.getElementById("latitude");
-                let div_altitude = document.getElementById("altitude");
+                navigator.geolocation.getCurrentPosition(this.get_latitude_altitude, function(e){console.log(e.message);}, {"enableHighAccuracy": true, "timeout": timeout, "maximumAge": 1000});
+                setTimeout(()=>{
+                    this.latitude = document.getElementById("latitude").innerHTML;
+                    this.altitude = document.getElementById("altitude").innerHTML;
+                    if (this.latitude == "" && this.altitude == "") this.get_postion();
+                    this.process_using_latitude_longitude();
+                }, timeout);
+            }
 
-                // this.latitude = div_latitude.innerHTML;  // 緯度
-                // this.altitude = div_altitude.innerHTML; // 経度
-                console.log(div_latitude.innerHTML);
+            process_using_latitude_longitude() {
+                if (this.cnt_process_using_latitude_longitude == 0) {
+                    this.func_process_using_latitude_longitude();
+                }
+                this.cnt_process_using_latitude_longitude = 1;
             }
         }
         
         let user_postion = new UserPostion();
+        
+        let consolelog = () => {
+            console.log(user_postion.latitude, user_postion.altitude);
+        }
+        user_postion.func_process_using_latitude_longitude = consolelog;
+
         user_postion.get_postion();
-
-        let latitude;
-        let altitude
-
-        setTimeout(() => {
-            let div_latitude = document.getElementById("latitude");
-            let div_altitude = document.getElementById("altitude");
-
-            // this.latitude = div_latitude.innerHTML;  // 緯度
-            // this.altitude = div_altitude.innerHTML; // 経度
-            console.log(div_latitude.innerHTML);
-            console.log(div_altitude.innerHTML);
-
-            latitude = div_latitude.innerHTML;
-            altitude = div_altitude.innerHTML;
-
-            // console.log(user_postion.latitude, user_postion.altitude)
-        }, 1000);
-
-        
-        
     </script>
 
-    <script type="text/javascript" charset="utf-8" src="https://map.yahooapis.jp/js/V1/jsapi?appid=dj00aiZpPTdueDAyc3RReGRMTSZzPWNvbnN1bWVyc2VjcmV0Jng9MDc">
+    <!-- <script type="text/javascript" charset="utf-8" src="https://map.yahooapis.jp/js/V1/jsapi?appid=dj00aiZpPTdueDAyc3RReGRMTSZzPWNvbnN1bWVyc2VjcmV0Jng9MDc">
         // console.log(latitude, altitude)
         let ymap = new Y.Map("map");
-        setTimeout(() => {
-            ymap.drawMap(new Y.LatLng(latitude, altitude), 17, Y.LayerSetId.NORMAL);
-        }, 1000)
-    </script>
+        ymap.drawMap(new Y.LatLng(user_postion.latitude, user_postion.altitude), 17, Y.LayerSetId.NORMAL);
+    </script> -->
 
 </body>
 </html>	
