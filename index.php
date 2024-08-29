@@ -50,42 +50,43 @@
         }
     ?>
 
-    <p id="latitude"></p>
-    <p id="altitude"></p>
+    <data id="latitude" value=""></data>
+    <data id="altitude" value=""></data>
     <script>
         class MyMap {
             latitude;
             altitude;
-            cnt_process_using_latitude_longitude;
-            func_process_using_latitude_longitude;
+            draw_map;
 
-            constructor() {
-                this.cnt_process_using_latitude_longitude = 0;
-                this.func_process_using_latitude_longitude = () => {};
+            constructor(draw_map) {
+                this.draw_map = draw_map;
             }
 
-            get_latitude_altitude(position) {
-                document.getElementById("latitude").innerHTML = position.coords.latitude;  // 緯度
-                document.getElementById("altitude").innerHTML = position.coords.longitude; // 経度
+            get_latitude_and_altitude() {
+                return new Promise( (resolve, reject) => {
+                    navigator.geolocation.getCurrentPosition(
+                        (position) => {
+                            document.getElementById("latitude").value = position.coords.latitude;  // 緯度
+                            document.getElementById("altitude").value = position.coords.longitude; // 経度
+                            resolve()
+                        },
+                        (error) => {
+                            reject(error);
+                        }
+                    )
+                });
             }
 
-            get_postion_and_exec_map_process() {
-                let timeout = 1000;
-
-                navigator.geolocation.getCurrentPosition(this.get_latitude_altitude, function(e){console.log(e.message);}, {"enableHighAccuracy": true, "timeout": timeout, "maximumAge": 1000});
-                setTimeout(()=>{
-                    this.latitude = document.getElementById("latitude").innerHTML;
-                    this.altitude = document.getElementById("altitude").innerHTML;
-                    if (this.latitude == "" && this.altitude == "") this.get_postion_and_exec_map_process();
-                    this.process_using_latitude_longitude();
-                }, timeout);
-            }
-
-            process_using_latitude_longitude() {
-                if (this.cnt_process_using_latitude_longitude == 0) {
-                    this.func_process_using_latitude_longitude();
+            async exec_map_func() {
+                try {
+                    await this.get_latitude_and_altitude();
+                    this.latitude = document.getElementById("latitude").value;
+                    this.altitude = document.getElementById("altitude").value;
+                    this.draw_map(this.latitude, this.altitude);
+                    
+                } catch(err) {
+                    console.log(err)
                 }
-                this.cnt_process_using_latitude_longitude = 1;
             }
         }
     </script>
@@ -93,21 +94,18 @@
     <div id="map"></div>
 
     <script>
-        let my_map = new MyMap();
-
-        const draw_map = () => {
-            var MyLatLng = new google.maps.LatLng(my_map.latitude, my_map.altitude);
+        let draw_map = (latitude, altitude) => {
+            var MyLatLng = new google.maps.LatLng(latitude, altitude);
             var Options = {
-            zoom: 15,      //地図の縮尺値
-            center: MyLatLng,    //地図の中心座標
-            mapTypeId: 'roadmap'   //地図の種類
+                zoom: 15,      //地図の縮尺値
+                center: MyLatLng,    //地図の中心座標
+                mapTypeId: 'roadmap'   //地図の種類
             };
             var map = new google.maps.Map(document.getElementById('map'), Options);
         }
 
-        my_map.func_process_using_latitude_longitude = draw_map;
-
-        my_map.get_postion_and_exec_map_process();
+        my_map = new MyMap(draw_map);
+        my_map.exec_map_func();
     </script>
 </body>
 </html>	
