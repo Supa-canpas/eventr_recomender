@@ -13,12 +13,12 @@
 </head>
 <body>
     <?php
-        // require_once("save_data.php");
-        // $save_event_info = new SaveEventInfo();
-        // $save_event_info->exec_scraping_py();
-        // $save_event_info->delete_database();
-        // $save_event_info->save();
-        // $save_event_info->disconnect();
+        require_once("save_data.php");
+        $save_event_info = new SaveEventInfo();
+        $save_event_info->exec_scraping_py();
+        $save_event_info->delete_database();
+        $save_event_info->save();
+        $save_event_info->disconnect();
     ?>
 
     <?php
@@ -102,6 +102,13 @@
                 mapTypeId: 'roadmap'   //地図の種類
             };
             var map = new google.maps.Map(document.getElementById('map'), Options);
+            
+            // 現在地にマーカーを立てる
+            marker = new google.maps.Marker({
+                position: MyLatLng,
+                map: map,
+                title: "現在地",
+            });
         }
 
         my_map = new MyMap(draw_map);
