@@ -13,12 +13,12 @@
 </head>
 <body>
     <?php
-        require_once("save_data.php");
-        $save_event_info = new SaveEventInfo();
-        $save_event_info->exec_scraping_py();
-        $save_event_info->delete_database();
-        $save_event_info->save();
-        $save_event_info->disconnect();
+        // require_once("save_data.php");
+        // $save_event_info = new SaveEventInfo();
+        // $save_event_info->exec_scraping_py();
+        // $save_event_info->delete_database();
+        // $save_event_info->save();
+        // $save_event_info->disconnect();
     ?>
 
     <?php
@@ -44,7 +44,7 @@
                     EVENT;
                     $placelist=explode('、',$event["place"]);
                     foreach( $placelist as $buf ){
-                        array_push($place,$buf);
+                        array_push($place, $buf);
                     }
                 }
 
@@ -114,7 +114,57 @@
                 map: map,
                 title: "現在地",
             });
-        }
+
+            var place_strings = "<?php
+                $return_string = "";
+                foreach ($place as $p) {
+                    $return_string .= $p . "__division__";
+                }
+                echo $return_string;
+            ?>";
+            var place_list = place_strings.split("__division__");
+            var geocoder = new google.maps.Geocoder();      // geocoderのコンストラクタ
+
+            for (let place of place_list) {
+                console.log(place);
+                geocoder.geocode({address: place}, function(results, status) {
+                    if (status == google.maps.GeocoderStatus.OK) {
+
+                        var bounds = new google.maps.LatLngBounds();
+
+                        for (var i in results) {
+                            if (results[0].geometry) {
+                                // 緯度経度を取得
+                                var latlng = results[0].geometry.location;
+                                // 住所を取得
+                                var address = results[0].formatted_address;
+                                // 検索結果地が含まれるように範囲を拡大
+                                bounds.extend(latlng);
+                                // マーカーのセット
+                                marker = new google.maps.Marker({
+                                    position: latlng,
+                                    map: map,
+                                    icon: 'http://maps.google.com/mapfiles/ms/icons/blue-dot.png'
+                                });
+                                // マーカーへの吹き出しの追加
+                                infoWindow = new google.maps.InfoWindow({
+                                    content: "<a href='http://www.google.com/search?q=" + place + "' target='_blank'>" + place + "</a><br><br>" + latlng + "<br><br>" + address + "<br><br><a href='http://www.google.com/search?q=" + place + "&tbm=isch' target='_blank'>画像検索 by google</a>"
+                                });
+                                // マーカーにクリックイベントを追加
+                                marker.addListener('click', function() {
+                                    infoWindow.open(map, marker);
+                                });
+                            }
+                        }
+                    } else if (status == google.maps.GeocoderStatus.ZERO_RESULTS) {
+                        console.log("見つかりません");
+                    } else {
+                        console.log(status);
+                        console.log("エラー発生");
+                    }
+                });
+            }
+        };
 
         my_map = new MyMap(draw_map);
         my_map.exec_map_func();
