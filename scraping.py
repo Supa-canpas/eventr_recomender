@@ -60,7 +60,11 @@ class EventInfo:
                     except:
                         buf = 'empty'
                 else:
-                    buf = records[i].find('td').text
+                    buf = records[i].find('td')
+                buf=str(buf)
+                buf=buf.replace("<td>","")
+                buf=buf.replace("</td>","")
+                buf=buf.replace("<br/>","、")
                 self.event_details.append(buf)
         except:
             pass
