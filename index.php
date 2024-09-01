@@ -22,6 +22,7 @@
     ?>
 
     <?php
+        $place=[];
         try {
             $database_name = 'root';
             $database_password = 'root';
@@ -41,6 +42,10 @@
                         <p><a href="{$event["officialsite"]}">公式サイト</a></p>
                     </div>
                     EVENT;
+                    $placelist=explode('、',$event["place"]);
+                    foreach( $placelist as $buf ){
+                        array_push($place,$buf);
+                    }
                 }
 
             }
@@ -102,17 +107,17 @@
                 mapTypeId: 'roadmap'   //地図の種類
             };
             var map = new google.maps.Map(document.getElementById('map'), Options);
-            
-            // 現在地にマーカーを立てる
-            marker = new google.maps.Marker({
-                position: MyLatLng,
-                map: map,
-                title: "現在地",
-            });
         }
 
         my_map = new MyMap(draw_map);
         my_map.exec_map_func();
     </script>
+
+    <?php
+        foreach($place as $buf)
+        {
+            echo $buf."<br/>";
+        }
+    ?>
 </body>
 </html>	
