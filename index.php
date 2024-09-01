@@ -142,6 +142,7 @@
                                 bounds.extend(latlng);
                                 // マーカーのセット
                                 marker = new google.maps.Marker({
+                                    title: place,
                                     position: latlng,
                                     map: map,
                                     icon: 'http://maps.google.com/mapfiles/ms/icons/blue-dot.png'
