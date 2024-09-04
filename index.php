@@ -5,11 +5,6 @@
     <meta charset="UTF-8">
     <link rel="stylesheet" href="style.css">
     <script src="http://maps.google.com/maps/api/js?key=AIzaSyD2SLN_jrwM5MCqTLAIcJcLkuORj5dLiPw&language=ja"></script>
-    <style>
-        html { height: 100% }
-        body { height: 100% }
-        #map { height: 100%; width: 100%}
-    </style>
 </head>
 <body>
     <?php
@@ -22,7 +17,8 @@
     ?>
 
     <?php
-        $place=[];
+        $str_event_info_datas = "";
+        
         try {
             $database_name = 'root';
             $database_password = 'root';
@@ -42,12 +38,20 @@
                         <p><a href="{$event["officialsite"]}">公式サイト</a></p>
                     </div>
                     EVENT;
+                    
+                    $str_event_info_datas .= "/packet=>";
+                    $str_event_info_datas .= "/property=>";
+                    $str_event_info_datas .= $event["title"];
+                    $str_event_info_datas .= "/property=>";
+                    $str_event_info_datas .= $event["officialsite"];
+                    $str_event_info_datas .= "/property=>";
+
                     $placelist=explode('、',$event["place"]);
                     foreach( $placelist as $buf ){
-                        array_push($place, $buf);
+                        $str_event_info_datas .= "__division__=>";
+                        $str_event_info_datas .= $buf;
                     }
                 }
-
             }
         }
         catch (PDOException) {
@@ -108,74 +112,71 @@
             };
             var map = new google.maps.Map(document.getElementById('map'), Options);
 
-            // 現在地にマーカーを立てる
-            marker = new google.maps.Marker({
-                position: MyLatLng,
-                map: map,
-                title: "現在地",
-            });
+            setTimeout(() =>{
+                // 現在地にマーカーを立てる
+                marker = new google.maps.Marker({
+                    position: MyLatLng,
+                    map: map,
+                    title: "現在地",
+                });
+                infoWindow = new google.maps.InfoWindow({
+                    content: "現在地"
+                });
+                marker.addListener("click", function() {
+                    infoWindow.open(map, marker);
+                });
+                infoWindow.open(map, marker);
+            }, 1500)
 
-            var place_strings = "<?php
-                $return_string = "";
-                foreach ($place as $p) {
-                    $return_string .= $p . "__division__";
-                }
-                echo $return_string;
-            ?>";
-            var place_list = place_strings.split("__division__");
+            
+
+            var str_event_info_datas = "<?php echo $str_event_info_datas; ?>";
+            var event_info_packets = str_event_info_datas.split("/packet=>").slice(1);
+            for (let i = 0; i < event_info_packets.length; i++) {
+                let event_datas = event_info_packets[i].split("/property=>").slice(1);
+                let place_list = event_datas[2].split("__division__=>").slice(1);
+                event_info_packets[i] = {title: event_datas[0], officialsite: event_datas[1], places: place_list};
+            }
+            
             var geocoder = new google.maps.Geocoder();      // geocoderのコンストラクタ
-
-            for (let place of place_list) {
-                console.log(place);
-                geocoder.geocode({address: place}, function(results, status) {
-                    if (status == google.maps.GeocoderStatus.OK) {
-
-                        var bounds = new google.maps.LatLngBounds();
-
-                        for (var i in results) {
+            
+            for (let event_info_packet of event_info_packets) {
+                for (let place of event_info_packet.places) {
+                    geocoder.geocode({address: place}, function(results, status) {
+                        if (status == google.maps.GeocoderStatus.OK) {
                             if (results[0].geometry) {
                                 // 緯度経度を取得
                                 var latlng = results[0].geometry.location;
                                 // 住所を取得
                                 var address = results[0].formatted_address;
-                                // 検索結果地が含まれるように範囲を拡大
-                                bounds.extend(latlng);
-                                // マーカーのセット
-                                marker = new google.maps.Marker({
-                                    title: place,
+
+                                var infoWindow = new google.maps.InfoWindow({
+                                    content: "<a href='" + event_info_packet.officialsite + "'>" + event_info_packet.title + "</a>"
+                                });
+                                var marker = new google.maps.Marker({
+                                    title: event_info_packet.title,
                                     position: latlng,
                                     map: map,
                                     icon: 'http://maps.google.com/mapfiles/ms/icons/blue-dot.png'
                                 });
-                                // マーカーへの吹き出しの追加
-                                infoWindow = new google.maps.InfoWindow({
-                                    content: "<a href='http://www.google.com/search?q=" + place + "' target='_blank'>" + place + "</a><br><br>" + latlng + "<br><br>" + address + "<br><br><a href='http://www.google.com/search?q=" + place + "&tbm=isch' target='_blank'>画像検索 by google</a>"
-                                });
-                                // マーカーにクリックイベントを追加
-                                marker.addListener('click', function() {
+                                infoWindow.open(map, marker);
+                                marker.addListener("click", function() {
                                     infoWindow.open(map, marker);
                                 });
                             }
+                        } else if (status == google.maps.GeocoderStatus.ZERO_RESULTS) {
+                            console.log("見つかりません");
+                        } else {
+                            console.log(status);
+                            console.log("エラー発生");
                         }
-                    } else if (status == google.maps.GeocoderStatus.ZERO_RESULTS) {
-                        console.log("見つかりません");
-                    } else {
-                        console.log(status);
-                        console.log("エラー発生");
-                    }
-                });
+                    });
+                }
             }
         };
 
         my_map = new MyMap(draw_map);
         my_map.exec_map_func();
     </script>
-
-    <?php
-        foreach($place as $buf)
-        {
-            echo $buf."<br/>";
-        }
-    ?>
 </body>
 </html>	
