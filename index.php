@@ -33,9 +33,10 @@
                     echo <<<EVENT
                     <div class="event_info">
                         <p class="title">{$event["title"]}</p>
-                        <p>{$event["date"]}</p>
-                        <p>{$event["place"]}</p>
-                        <p><a href="{$event["officialsite"]}">公式サイト</a></p>
+                        <p><span class="date">日付</span>{$event["date"]}</p>
+                        <p><span class="place">場所</span>{$event["place"]}</p>
+                        <p><span class="category">カテゴリ</span>{$event["category"]}</p>
+                        <p><span class="link">リンク</span><a href="{$event["officialsite"]}">公式サイト</a></p>
                     </div>
                     EVENT;
                     
@@ -59,8 +60,11 @@
         }
     ?>
 
+
     <data id="latitude" value=""></data>
     <data id="altitude" value=""></data>
+
+    
     <script>
         class MyMap {
             latitude;
@@ -77,7 +81,7 @@
                         (position) => {
                             document.getElementById("latitude").value = position.coords.latitude;  // 緯度
                             document.getElementById("altitude").value = position.coords.longitude; // 経度
-                            resolve()
+                            resolve();
                         },
                         (error) => {
                             reject(error);
@@ -128,9 +132,8 @@
                 infoWindow.open(map, marker);
             }, 1500)
 
-            
-
-            var str_event_info_datas = "<?php echo $str_event_info_datas; ?>";
+        
+            var str_event_info_datas = "<?php echo str_replace('"', '', $str_event_info_datas)?>";
             var event_info_packets = str_event_info_datas.split("/packet=>").slice(1);
             for (let i = 0; i < event_info_packets.length; i++) {
                 let event_datas = event_info_packets[i].split("/property=>").slice(1);
@@ -142,6 +145,7 @@
             
             for (let event_info_packet of event_info_packets) {
                 for (let place of event_info_packet.places) {
+                    place = place.replace(/<a[^>]*>/g, "").replace("</a>", "");
                     geocoder.geocode({address: place}, function(results, status) {
                         if (status == google.maps.GeocoderStatus.OK) {
                             if (results[0].geometry) {

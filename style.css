@@ -4,14 +4,43 @@ body { height: 100% }
 
 #map { height: 100%; width: 100%}
 
-.title {
-    font-size: 160%;
-    font-weight: bold;
-}
-
 .event_info {
     padding: 0.5em 1em;
     margin: 2em 0;
     border: solid 3px #000000;
 }
+
+.title {
+    font-size: 160%;
+    font-weight: bold;
+}
+
+.date {
+    padding: 0px 26px;
+    margin-right: 10px;
+    background-color: lightgreen;
+    border-radius: 30px;
+}
+
+.place {
+    padding: 0px 26px;
+    margin-right: 10px;
+    background-color: lightblue;
+    border-radius: 30px;
+}
+
+.category {
+    padding: 0px 10px;
+    margin-right: 10px;
+    background-color: lightpink;
+    border-radius: 30px;
+}
+
+.link {
+    padding: 0px 18px;
+    margin-right: 10px;
+    background-color: lightcoral;
+    border-radius: 30px;
+}
+
 

@@ -26,16 +26,17 @@
             }
         }
 
-        private function insert_database($title,$officialsite,$place,$date,$access) {
+        private function insert_database($title, $officialsite, $place, $date, $access, $category) {
             try {
                 // SQLクエリ作成
-                $stmt = $this->db->prepare("INSERT INTO event_info VALUES(?, ?, ?, ?, ?);");
+                $stmt = $this->db->prepare("INSERT INTO event_info VALUES(?, ?, ?, ?, ?, ?);");
     
                 $stmt->bindParam(1, $title,PDO::PARAM_STR);                
                 $stmt->bindParam(2, $officialsite,PDO::PARAM_STR);
                 $stmt->bindParam(3, $place, PDO::PARAM_STR);
                 $stmt->bindParam(4, $date, PDO::PARAM_STR);
                 $stmt->bindParam(5, $access, PDO::PARAM_STR);
+                $stmt->bindParam(6, $category, PDO::PARAM_STR);
     
                 // クエリ実行
                 $res = $stmt->execute();
@@ -56,13 +57,14 @@
             $place = "";
             $date = "";
             $access = "";
+            $category = "";
             $i=0;
 
             foreach ($this->output as $_info) {
                 $info = iconv("Shift-JIS", "UTF-8", $_info);
 
                 if ($info == "separate_site") {
-                    $this->insert_database($title,$officialsite,$place,$date,$access);
+                    $this->insert_database($title, $officialsite, $place, $date, $access, $category);
 
                     $title = "";
                     $officialsite = "";
@@ -72,13 +74,13 @@
                     $i=0;
                 } 
                 else if ($info == "separate_table") {$i++;}
-                else if ($info === "コラボカフェ" or $info === "ポップアップストア" or $info === "原画展・展示会") {}
+                else if ($info === "コラボカフェ" or $info === "ポップアップストア" or $info === "原画展・展示会") {$category = $info;}
                 else {
-                    if($i==0) $title.=$info;
-                    else if($i==1) $officialsite.=$info;
-                    else if($i==2) $place.=$info;
-                    else if($i==3) $date.=$info;
-                    else if($i==4) $access.=$info;
+                    if($i==0) $title .= $info;
+                    else if($i==1) $officialsite .= $info;
+                    else if($i==2) $place .= $info;
+                    else if($i==3) $date .= $info;
+                    else if($i==4) $access .= $info;
                 }
             }
         }
