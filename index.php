@@ -17,54 +17,15 @@
     ?>
 
     <?php
-        $str_event_info_datas = "";
-        
-        try {
-            $database_name = 'root';
-            $database_password = 'root';
-            $db = new PDO('mysql:host=localhost;dbname=eventdatabase', $database_name, $database_password);
-            // SQLクエリ作成
-            $stmt = $db->prepare("SELECT * FROM event_info;");
-            // クエリ実行
-            $res = $stmt->execute();
-            if($res) {
-                $event_info = $stmt->fetchAll();
-                foreach($event_info as $event) {
-                    echo <<<EVENT
-                    <div class="event_info">
-                        <p class="title">{$event["title"]}</p>
-                        <p><span class="date">日付</span>{$event["date"]}</p>
-                        <p><span class="place">場所</span>{$event["place"]}</p>
-                        <p><span class="category">カテゴリ</span>{$event["category"]}</p>
-                        <p><span class="link">リンク</span><a href="{$event["officialsite"]}">公式サイト</a></p>
-                    </div>
-                    EVENT;
-                    
-                    $str_event_info_datas .= "/packet=>";
-                    $str_event_info_datas .= "/property=>";
-                    $str_event_info_datas .= $event["title"];
-                    $str_event_info_datas .= "/property=>";
-                    $str_event_info_datas .= $event["officialsite"];
-                    $str_event_info_datas .= "/property=>";
-
-                    $placelist=explode('、',$event["place"]);
-                    foreach( $placelist as $buf ){
-                        $str_event_info_datas .= "__division__=>";
-                        $str_event_info_datas .= $buf;
-                    }
-                }
-            }
-        }
-        catch (PDOException) {
-            echo 'データベース接続失敗';
-        }
+        require_once("module/get_print_event_info.php");
+        $get_print_event_info = new GetPrintEventInfoForIndexPHP();
+        $get_print_event_info->get_event_info();
+        $get_print_event_info->print_event_info();
     ?>
-
 
     <data id="latitude" value=""></data>
     <data id="altitude" value=""></data>
 
-    
     <script>
         class MyMap {
             latitude;
@@ -133,7 +94,7 @@
             }, 1500)
 
         
-            var str_event_info_datas = "<?php echo str_replace('"', '', $str_event_info_datas)?>";
+            var str_event_info_datas = "<?php echo str_replace('"', '', $get_print_event_info->str_event_info_datas)?>";
             var event_info_packets = str_event_info_datas.split("/packet=>").slice(1);
             for (let i = 0; i < event_info_packets.length; i++) {
                 let event_datas = event_info_packets[i].split("/property=>").slice(1);
