@@ -3,7 +3,7 @@
         function echo_search_screen() {
             echo<<<SEARCH
                 <link rel="stylesheet" href="search.css">
-                <form class="search_screen" method="POST" action="?">
+                <form class="search_screen" method="POST" action="?" name="search_form">
                     <p id="p_keyword">キーワード</p>
                     <input type="text" id="search_keyword" name="search_keyword" placeholder="イベント名、場所 など">
                     <p id="p_date">日付</p>

@@ -1,5 +1,5 @@
 <?php
-    class GetPrintEventInfo {
+    class GetEventInfo {
         public $event_info;
 
         function __construct() {
@@ -21,10 +21,8 @@
                     foreach($event_info as $event) {
                         array_push($this->event_info, []); 
                         $key_name = ["title", "officialsite", "place", "date", "access", "category"];
-                        foreach ($key_name as $key) $this->event_info[$cnt][$key] = $event[$key];  
-
-                        $this->add_get_event_info($event, $cnt);
-       
+                        foreach ($key_name as $key) $this->event_info[$cnt][$key] = $event[$key];
+                        $this->add_get_event_info($event, $cnt);         
                         $cnt++;
                     }
                 }
@@ -35,9 +33,9 @@
                 echo 'データベース接続失敗';
             }
         }
+    }
 
-        protected function add_print_event_info($event) {}
-
+    class GetPrintEventInfo extends GetEventInfo {
         function print_event_info() {
             foreach ($this->event_info as $event) {
                 echo <<<EVENT
@@ -49,34 +47,8 @@
                     <p><span class="link">リンク</span><a href="{$event["officialsite"]}">公式サイト</a></p>
                 </div>
                 EVENT;
-
-                $this->add_print_event_info($event);
             }
         }
-    }
-
-    class GetPrintEventInfoForIndexPHP extends GetPrintEventInfo {
-        public $str_event_info_datas;
-
-        function __construct(){
-            parent::__construct();
-            $this->str_event_info_datas = "";
-        }
-
-        protected function add_print_event_info($event) {
-            $this->str_event_info_datas .= "/packet=>";
-            $this->str_event_info_datas .= "/property=>";
-            $this->str_event_info_datas .= $event["title"];
-            $this->str_event_info_datas .= "/property=>";
-            $this->str_event_info_datas .= $event["officialsite"];
-            $this->str_event_info_datas .= "/property=>";
-
-            $placelist=explode('、',$event["place"]);
-            foreach( $placelist as $buf ){
-                $this->str_event_info_datas .= "__division__=>";
-                $this->str_event_info_datas .= $buf;
-            }
-        }        
     }
 
     class GetPrintEventInfoForSearchResultPHP extends GetPrintEventInfo {
@@ -157,9 +129,24 @@
         private function extraction_by_search_about_keyword() {
             // キーワードによる抽出
             if ($_POST["search_keyword"] != "") {
+                $separate_word = [".", ",", ":", ";", "|", "\n", "\t", "-", "*", "/", " ", "　", "。", "、", "・"];
+                $search_keyword_list = explode("/", str_replace($separate_word, "/", $_POST["search_keyword"]));
+                $buf = [];
+                foreach ($search_keyword_list as $search_keyword) {
+                    if ($search_keyword != "") array_push($buf, $search_keyword);
+                }
+                $search_keyword_list = $buf;
+                $lenght_search_keyword_list = count($search_keyword_list);
+
                 $buf_array = [];
                 for ($i = 0; $i < count($this->event_info); $i++) {
-                    if (strpos($this->event_info[$i]["united_all_property"], $_POST["search_keyword"]) != false) {
+                    $match_cnt = 0;
+                    foreach ($search_keyword_list as $search_keyword) {
+                        if (strpos($this->event_info[$i]["united_all_property"], $search_keyword) != false) {
+                            $match_cnt++;
+                        }
+                    }
+                    if ($match_cnt == $lenght_search_keyword_list) {
                         array_push($buf_array, $this->event_info[$i]);
                     }
                 }
@@ -178,6 +165,32 @@
             }
 
             return true;
+        }
+    }
+
+    class GetEventInfoDraeMap extends GetEventInfo {
+        public $str_event_info_datas;
+
+        function __construct(){
+            parent::__construct();
+            $this->str_event_info_datas = "";
+        }
+
+        function get_event_info_for_map() {
+            foreach($this->event_info as $event) {
+                $this->str_event_info_datas .= "/packet=>";
+                $this->str_event_info_datas .= "/property=>";
+                $this->str_event_info_datas .= $event["title"];
+                $this->str_event_info_datas .= "/property=>";
+                $this->str_event_info_datas .= $event["officialsite"];
+                $this->str_event_info_datas .= "/property=>";
+
+                $placelist=explode('、',$event["place"]);
+                foreach( $placelist as $buf ){
+                    $this->str_event_info_datas .= "__division__=>";
+                    $this->str_event_info_datas .= $buf;
+                }
+            }
         }
     }
 ?>
