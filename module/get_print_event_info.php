@@ -51,7 +51,7 @@
         }
     }
 
-    class GetPrintEventInfoForSearchResultPHP extends GetPrintEventInfo {
+    class GetSearchPrintEventInfo extends GetPrintEventInfo {
         protected function add_get_event_info($event, $cnt) {
             // 標準化した日付を求める
             $datelist = explode('、',$event["date"]);
@@ -155,20 +155,20 @@
         }
 
         function extraction_by_search() {
+            if (isset($_POST["cb"]) == false and isset($_POST["date"]) == false and isset($_POST["search_keyword"]) == false) {
+                return "failed";
+            }
+
             $this->extraction_by_search_about_category();
             $this->extraction_by_search_about_date();
             $this->extraction_by_search_about_keyword();
 
-            if ($this->event_info == []) {
-                echo "検索に一致するイベントはありません";
-                return false;
-            }
-
-            return true;
+            if ($this->event_info == []) return "none_event";
+            else return "success";
         }
     }
 
-    class GetEventInfoDraeMap extends GetEventInfo {
+    class GetEventInfoMap extends GetSearchPrintEventInfo {
         public $str_event_info_datas;
 
         function __construct(){

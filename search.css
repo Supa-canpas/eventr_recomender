@@ -15,7 +15,7 @@
     margin: 3% auto;
     padding: 0% 4%;
     width: 92%;
-    /* border: solid 1px #000000; */
+    /* border: solid 2px blue; */
 }
 
 #p_keyword {
@@ -43,22 +43,18 @@
     padding: 10px;
 }
 
-.button {
-    margin-top: 20px;
-}
-
-#btn_cancel {
+/* #btn_cancel {
     font-size: 18px;
     width: 30%;
     color: rgba(3, 3, 141, 0.604);
     font-weight: bold;
     border-radius: 10px;
-}
+} */
 
 #btn_search {
     font-size: 18px;
-    width: 66%;
-    margin-left: 2%;
+    width: 100%;
+    margin-top: 20px;
     color: white;
     background-color: rgba(3, 3, 141, 0.604);
     font-weight: bold;
