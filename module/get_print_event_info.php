@@ -1,5 +1,5 @@
 <?php
-    class GetEventInfo {
+    class GetPrintEventInfo {
         public $event_info;
 
         function __construct() {
@@ -33,9 +33,7 @@
                 echo 'データベース接続失敗';
             }
         }
-    }
 
-    class GetPrintEventInfo extends GetEventInfo {
         function print_event_info() {
             foreach ($this->event_info as $event) {
                 echo <<<EVENT
@@ -129,8 +127,9 @@
         private function extraction_by_search_about_keyword() {
             // キーワードによる抽出
             if ($_POST["search_keyword"] != "") {
+                $keyword = str_replace(["php", "script"], "", $_POST["search_keyword"]);
                 $separate_word = [".", ",", ":", ";", "|", "\n", "\t", "-", "*", "/", " ", "　", "。", "、", "・"];
-                $search_keyword_list = explode("/", str_replace($separate_word, "/", $_POST["search_keyword"]));
+                $search_keyword_list = explode("/", str_replace($separate_word, "/", $keyword));
                 $buf = [];
                 foreach ($search_keyword_list as $search_keyword) {
                     if ($search_keyword != "") array_push($buf, $search_keyword);

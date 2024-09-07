@@ -1,3 +1,23 @@
+// function get_google_map_api() {
+//     <script>
+//         let google_map_api = document.querySelector("#google_map_api");
+//         google_map_api.setAttribute("src", "http://maps.google.com/maps/api/js?key=AIzaSyD2SLN_jrwM5MCqTLAIcJcLkuORj5dLiPw&language=ja");
+//     </script>
+
+
+//     var req = new XMLHttpRequest();
+//     req.onreadystatechange = function() {
+//         var google_map_api = document.getElementById('google_map_api');
+//         if (req.readyState == 4) { // 通信の完了時
+//         if (req.status == 200) { // 通信の成功時
+//             google_map_api.setAttribute("src", req.responseText);
+//         }
+//         }else{}
+//     }
+//     req.open('POST', 'send_google_map_api.php', true);
+//     req.setRequestHeader('content-type', 'application/x-www-form-urlencoded;charset=UTF-8');
+// }
+
 class MyMap {
     latitude;
     altitude;

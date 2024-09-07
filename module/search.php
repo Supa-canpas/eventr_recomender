@@ -33,7 +33,7 @@
 
         function echo_search_screen($page_transition) {
             echo<<<SEARCH
-                <link rel="stylesheet" href="search.css">
+                <link rel="stylesheet" href="style/search.css">
                 <form class="search_screen" method="POST" action="?" name="search_form">
                     <p id="p_keyword">キーワード</p>
                     <input type="text" id="search_keyword" name="search_keyword" placeholder="イベント名、場所 など" value="{$this->keyword}">

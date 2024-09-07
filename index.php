@@ -3,20 +3,23 @@
 <head>
     <title>イベントを君におすすめするWebサイト</title>
     <meta charset="UTF-8">
-    <link rel="stylesheet" href="style.css">
-    <script src="http://maps.google.com/maps/api/js?key=AIzaSyD2SLN_jrwM5MCqTLAIcJcLkuORj5dLiPw&language=ja"></script>
+    <link rel="stylesheet" href="style/style.css">
+    <meta name="discription" content="現在近くで行われているイベントを教えてくれるサイトです。コラボカフェ・ポップアップストア・原画展・展示会などのイベントについてお知らせします。">
 </head>
 <body>
     <?php
-        // require_once("save_data.php");
-        // $save_event_info = new SaveEventInfo();
-        // $save_event_info->exec_scraping_py();
-        // $save_event_info->delete_database();
-        // $save_event_info->save();
-        // $save_event_info->disconnect();
-    ?>
+        require_once("module/check_date.php");
+        $check_date = new CheckDate();
+        $check_date->check_date();
+        if ($check_date->flg_first_exec_today) {
+            require_once("module/save_data.php");
+            $save_event_info = new SaveEventInfo();
+            $save_event_info->exec_scraping_py();
+            $save_event_info->delete_database();
+            $save_event_info->save();
+            $save_event_info->disconnect();
+        }
 
-    <?php
         require_once("module/get_print_event_info.php");
         $get_print_event_info = new GetPrintEventInfo();
         $get_print_event_info->get_event_info();
