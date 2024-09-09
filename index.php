@@ -25,5 +25,14 @@
         $get_print_event_info->get_event_info();
         $get_print_event_info->print_event_info();
     ?>
+
+    <table id="under_bar" border="1">
+        <tr >
+            <th>ホーム</th>
+            <th>マップ</th>
+            <th>検索</th>
+            <th>設定</th>
+        </tr>
+    </table>
 </body>
 </html>	
