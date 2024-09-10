@@ -45,7 +45,27 @@ body { height: 100% }
     border-radius: 30px;
 }
 
-table#under_bar{
-    margin:  1000px 2000px;    
+.item{
+    margin: 10px 0px;
+    padding: 10px;
+    border: solid 2px #ff6200;
+    border-radius: 50px;
+    width: 20%;
+    background-color: #ffb700;
+    text-align:center;
+    font-size: 100%;
+    white-space: nowrap;
+}
+
+.container{
+    display: flex;
+    border: solid 1px ;
+    border-radius: 10px;
+    justify-content: space-around;
+    background-color: rgb(255, 140, 0);
+    position: fixed;
+    left: 0;
+    bottom: 0;
+    width: 100%;
 }
 

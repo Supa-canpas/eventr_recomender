@@ -40,5 +40,14 @@
         my_map = new MyMap("<?php echo str_replace('"', '', $get_print_event_info->str_event_info_datas)?>");
         my_map.exec_map_func(draw_map);
     </script>
+
+    <form method="POST" action="?">
+        <div class="container">
+            <button type="submit" formaction="index.php" class="item">ホーム</button>
+            <button type="submit" formaction="map.php" class="item">マップ</button>
+            <button type="submit" formaction="search.php" class="item">検索</button>
+            <button type="submit" formaction="" class="item">並び替え</button>
+        </div>
+    </form>  
 </body>
 </html>	
